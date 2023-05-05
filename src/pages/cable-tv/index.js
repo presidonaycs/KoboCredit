@@ -25,6 +25,7 @@ const CableSubscription = () => {
     const [cardNumber, setCardNumber] = useState("");
     const [selectedBundle, setSelectedBundle] = useState("");
     const [smartCardDetails, setSmartCardDetails] = useState({});
+    const serviceType = ("Cable Subscription")
     let router = useRouter();
   
    
@@ -74,6 +75,8 @@ const CableSubscription = () => {
         setBundles(res?.data?.bundles)
     }
 
+    
+
     const getSmartCardInfo =async () =>{
         const res = await get({endpoint:`Tv/GetSmartcardInfo?network=${cable}&smartcardNo=${cardNumber}&servicecode=${selectedBundle}`})
         console.log(res);
@@ -93,7 +96,7 @@ const CableSubscription = () => {
         const res = await post({ endpoint: "Tv/VendTv", body: body, auth: false })
         console.log(res);
         alert("SUCCESS")
-       router.push("/print-receipt")
+       router.push(`/print-receipt?service=${cable}&amount=${bundles?.find((id)=>id.code === selectedBundle)?.price}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
     }
 
 

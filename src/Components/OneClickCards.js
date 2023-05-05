@@ -6,8 +6,8 @@ const OneClickCards =(props)=>{
         <Image 
             src={`/${props?.vendor}`}
             alt="vendor logo"
-            width={60}
-            height={60}
+            width={80}
+            height={80}
         />
         {/* <div>
             <div>NGN</div>

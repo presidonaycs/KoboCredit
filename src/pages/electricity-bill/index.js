@@ -26,7 +26,11 @@ const DataSubscription = () => {
     const [amount, setAmount] = useState(0);
     const [selectedDisco, setSelectedDisco] = useState("");
     const [accessToken, setAccessToken] = useState("");
+    const serviceType = ("Electric Bill")
     let router = useRouter()
+
+
+  
 
     const getDiscos = async () => {
         const res = await get({ endpoint: "Power/GetElectricDiscos", auth: false })
@@ -63,7 +67,7 @@ const DataSubscription = () => {
         const body = {
             meterno: meterNumber,
             disco: selectedDisco,
-            access_token: meterInfo.access_token,
+            access_token: meterInfo?.access_token,
             amount: Number(amount),
             phone: phoneNumber,
             email: email
@@ -71,7 +75,7 @@ const DataSubscription = () => {
         const res = await post({ endpoint: "Power/VendPower", body: body, auth: false })
         console.log(res);
         alert("SUCCESS")
-        router.push("/print-receipt")
+        router.push(`/print-receipt?service=${selectedDisco}&amount=${amount}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
     }
 
 
@@ -129,8 +133,8 @@ const DataSubscription = () => {
                                     className="m-b-40  w-100"
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    value={selectedDisco}
                                     label="Distributor"
+                                    value={selectedDisco}
                                     onChange={handleChange}
                                 >
                                     {
@@ -147,6 +151,7 @@ const DataSubscription = () => {
                                 endAdornment: <InputAdornment position="end"><CardGiftcardIcon /></InputAdornment>,
                             }} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} onChange={handleChangeMeterNo} className="m-b-40 w-100" id="outlined-basicid" label="Meter Number" variant="outlined" />
                         </div>
+                        <div className='m-b-20'>{meterInfo?.customer && meterInfo?.customer?.name}</div>
 
                         <div className='m-b-20'><ColorButton onClick={buyData} variant="contained">Confirm</ColorButton></div>
                     </div>

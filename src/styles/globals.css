@@ -106,6 +106,10 @@ a {
   flex-direction: column;
 }
 
+.flex-start{
+  justify-content: flex-start;
+}
+
 .w-100 {
   width: 100%;
 }
@@ -373,12 +377,20 @@ a {
   margin-right: 30px !important;
 }
 
+.m-r-40 {
+  margin-right: 40px !important;
+}
+
 .m-r-50 {
   margin-right: 50px !important;
 }
 
 .m-t-10 {
   margin-top: 10px !important;
+}
+
+.color-white{
+  color: white;
 }
 
 .m-t-15 {
@@ -455,7 +467,12 @@ a {
 .receiptCard {
   border-radius: 5px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-  width: 30%;
+  width: 40%;
+}
+
+.css-n6v7qi-MuiPaper-root-MuiDrawer-paper{
+  background-color: dimgray;
+  color: white;
 }
 
 .summaryCard {
@@ -870,7 +887,7 @@ div.banner .login {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  background-attachment:scroll;
 }
 
 div.login {

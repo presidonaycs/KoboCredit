@@ -18,7 +18,11 @@ const AirtimePurchase = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
     const [network, setNetwork] = useState("");
+    const serviceType = ("Airtime Purchase")
     let router = useRouter()
+
+
+    
 
     const ColorButton = styled(Button)(({ theme }) => ({
         color: theme.palette.getContrastText(yellow[800]),
@@ -83,7 +87,7 @@ const AirtimePurchase = () => {
         const res = await post({ endpoint: "VendAirtime", body: body, auth: false })
         console.log(res);
         alert("SUCCESS")
-        router.push("/print-receipt")
+        router.push(`/print-receipt?service=${network}&amount=${amount}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
     }
 
 

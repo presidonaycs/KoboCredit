@@ -11,6 +11,12 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
+import HomeIcon from '@mui/icons-material/Home';
+import TvIcon from '@mui/icons-material/Tv';
+import PhoneIcon from '@mui/icons-material/Phone';
+import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
+import WifiIcon from '@mui/icons-material/Wifi';
+import HistoryIcon from '@mui/icons-material/History';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
@@ -22,6 +28,7 @@ import { Divider, Drawer, List, ListItem, ListItemIcon, ListItemButton, ListItem
 import Link from 'next/link';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import Image from 'next/image';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -94,13 +101,13 @@ export default function App({ Component, pageProps }) {
   };
 
   const list = (anchor) => (
-    
+
     <Box
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
       role="presentation"
       onClick={() => handleClose()}
       onKeyDown={() => handleClose()}
-      
+
     >
       {/* <List>
         {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
@@ -115,14 +122,20 @@ export default function App({ Component, pageProps }) {
         ))}
       </List> */}
       <Divider />
-      <List
-      
-      >
-        <Link href="/dashboard">
-          <ListItem  disablePadding>
+      <List>
+
+        <Link href="/" >
+          <ListItem disablePadding className=" flex flex-h-center m-b-40">
+            <Image src="/koborush.jpg" width={120} height={120} />
+          </ListItem>
+        </Link>
+
+
+        <Link href="/">
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                <HomeIcon />
               </ListItemIcon>
               <ListItemText primary={"Home"} />
             </ListItemButton>
@@ -130,10 +143,10 @@ export default function App({ Component, pageProps }) {
         </Link>
 
         <Link href="/cable-tv">
-          <ListItem  disablePadding>
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                <TvIcon />
               </ListItemIcon>
               <ListItemText primary={"TV/Cable Subscription"} />
             </ListItemButton>
@@ -141,10 +154,10 @@ export default function App({ Component, pageProps }) {
         </Link>
 
         <Link href="/airtime-purchase">
-          <ListItem  disablePadding>
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                <PhoneIcon />
               </ListItemIcon>
               <ListItemText primary={"Purchase Airtime"} />
             </ListItemButton>
@@ -152,10 +165,10 @@ export default function App({ Component, pageProps }) {
         </Link>
 
         <Link href="/data-subscription">
-          <ListItem  disablePadding>
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                <WifiIcon />
               </ListItemIcon>
               <ListItemText primary={"Data Subscription"} />
             </ListItemButton>
@@ -163,28 +176,26 @@ export default function App({ Component, pageProps }) {
         </Link>
 
         <Link href="/electricity-bill">
-          <ListItem  disablePadding>
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                <ElectricBoltIcon />
               </ListItemIcon>
               <ListItemText primary={"Electric Bill"} />
             </ListItemButton>
           </ListItem>
         </Link>
 
-        <Link href="/transaction-history">
-          <ListItem  disablePadding>
+        <Link href="/transactions">
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                <HistoryIcon />
               </ListItemIcon>
               <ListItemText primary={"Transaction History"} />
             </ListItemButton>
           </ListItem>
         </Link>
-
-
       </List>
     </Box>
   );
@@ -265,29 +276,34 @@ export default function App({ Component, pageProps }) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" >
-          <Toolbar sx={{ backgroundColor: "#222222" }}>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              sx={{ mr: 2, color: "#F28437" }}
-              onClick={() => setIsOpen(true)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ display: { xs: 'none', sm: 'block' } }}
-            >
-              PAYGATE
-            </Typography>
-            {/* <Search>
+      <>
+        <Box sx={{ flexGrow: 1 }}>
+          <AppBar position="static" >
+            <Toolbar sx={{ backgroundColor: "#222222" }}>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2, color: "#F28437" }}
+                onClick={() => setIsOpen(true)}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Link href="/" > <Image src="/koborush.jpg" width={40} height={40} /> </Link>
+
+              <Link href="/" >
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: '16px' }}
+                >
+                  KOBORUSH
+                </Typography>
+              </Link>
+
+              {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -295,23 +311,23 @@ export default function App({ Component, pageProps }) {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             /> */}
-            {/* </Search> */}
-            <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: "space-between", alignItems: "center", width: "30%" }}>
-              {/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+              {/* </Search> */}
+              <Box sx={{ flexGrow: 1 }} />
+              <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: "space-between", alignItems: "center", width: "30%" }}>
+                {/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
               </IconButton> */}
-              <Typography
-                variant="p"
-                noWrap
-                component="div"
-                sx={{ display: { xs: 'none', sm: 'block' } }}
-              >
-                Home
-              </Typography>
-              {/* <IconButton
+                {/* <Typography
+                  variant="p"
+                  noWrap
+                  component="div"
+                  sx={{ display: { xs: 'none', sm: 'block' } }}
+                >
+                  Home
+                </Typography> */}
+                {/* <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
@@ -320,62 +336,62 @@ export default function App({ Component, pageProps }) {
                 <NotificationsIcon />
               </Badge>
               </IconButton> */}
-              <Typography
-                variant="p"
-                noWrap
-                component="div"
-                sx={{ display: { xs: 'none', sm: 'block' } }}
-              >
-                About Us
-              </Typography>
-              <Typography
-                variant="p"
-                noWrap
-                component="div"
-                sx={{ display: { xs: 'none', sm: 'block' } }}
-              >
-                Contact Us
-              </Typography>
-              <IconButton
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            </Box>
-            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-              <IconButton
-                size="large"
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
-            </Box>
-          </Toolbar>
-        </AppBar>
-        {renderMobileMenu}
-        {renderMenu}
-      </Box>
-      <Component {...pageProps} />
-      <Footer />
-      <Drawer
-        anchor={"Left"}
-        open={isOpen}
-        onClose={handleClose}
-        
-      >
-        {list()}
-      </Drawer>
-    </>
+                <Typography
+                  variant="p"
+                  noWrap
+                  component="div"
+                  sx={{ display: { xs: 'none', sm: 'block' } }}
+                >
+                  About Us
+                </Typography>
+                <Typography
+                  variant="p"
+                  noWrap
+                  component="div"
+                  sx={{ display: { xs: 'none', sm: 'block' } }}
+                >
+                  Contact Us
+                </Typography>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+              <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                <IconButton
+                  size="large"
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </Box>
+            </Toolbar>
+          </AppBar>
+          {renderMobileMenu}
+          {renderMenu}
+        </Box>
+        <Component {...pageProps} />
+        <Footer />
+        <Drawer
+          anchor={"Left"}
+          open={isOpen}
+          onClose={handleClose}
+
+        >
+          {list()}
+        </Drawer>
+      </>
     </LocalizationProvider>
   );
 }

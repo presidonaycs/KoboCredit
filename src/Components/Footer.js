@@ -8,9 +8,9 @@ import Paper from "@mui/material/Paper";
 export default function GuestFooter() {
     return (
       <Paper sx={{
-      marginTop: 'calc(10% + 60px)',
+      marginTop: 'calc(10% + 30px)',
       width: '100%',
-      // position: 'fixed',
+      position: 'fixed',
       bottom: 0,
        height: '10%',
       backgroundColor:"#222222"
@@ -38,7 +38,7 @@ export default function GuestFooter() {
             }}
           >
             <Typography variant="caption" color="initial">
-              Copyright ©2023. KoboCredit Limited
+              Copyright ©2023. KoboRush Limited
             </Typography>
           </Box>
         </Container>

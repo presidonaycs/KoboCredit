@@ -23,6 +23,7 @@ const DataSubscription = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
     const [network, setNetwork] = useState("");
+    const serviceType = ("Data Subscription")
     let router = useRouter()
 
     const handleGlo = () => {
@@ -80,7 +81,7 @@ const DataSubscription = () => {
         const res = await post({ endpoint: "VendData", body:body, auth: false })
         console.log(res);
         alert("SUCCESS")
-        router.push("/print-receipt")
+        router.push(`/print-receipt?service=${network}&amount=${bundles?.find((id)=>id.code === vtuData)?.price}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
     }
 
 
