@@ -2,39 +2,37 @@ import { get, post } from '@/api-services/fetch';
 import OneClickCards from '@/Components/OneClickCards';
 import ThreeDots from '@/Components/ThreeDots'
 import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import {styled} from "@mui/material";
 import TextField from '@mui/material/TextField';
-import  {yellow}  from "@mui/material/colors";
+import { yellow } from '@mui/material/colors';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useToaster } from 'react-hot-toast';
+import { feedback } from '@/config/feedback';
 
-const AirtimePurchase = () => {
+
+const DataSubscription = () => {
 
     const [glo, setGlo] = useState(false);
     const [etisalat, setEtisalat] = useState(false);
     const [mtn, setMtn] = useState(false);
     const [airtel, setAirtel] = useState(false);
-    const [amount, setAmount] = useState(0);
+    const [bundles, setBundles] = useState([]);
+    const [vtuData, setVtuData] = useState(0);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
     const [network, setNetwork] = useState("");
-    const serviceType = ("Airtime Purchase")
+    const serviceType = ("Data Subscription")
     let router = useRouter()
-
-
-    
-
-    const ColorButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.getContrastText(yellow[800]),
-        backgroundColor: yellow[700],
-        '&:hover': {
-          backgroundColor: yellow[900],
-        },
-      }));
+    let toaster = useToaster();
 
     const handleGlo = () => {
         setGlo(true);
-
+        getDataBundles("Glo")
         setNetwork("Glo")
         setEtisalat(false);
         setMtn(false);
@@ -44,7 +42,7 @@ const AirtimePurchase = () => {
     const handleEtisalat = () => {
         setGlo(false);
         setEtisalat(true);
-
+        getDataBundles("Etisalat")
         setNetwork("Etisalat")
         setMtn(false);
         setAirtel(false);
@@ -54,7 +52,7 @@ const AirtimePurchase = () => {
         setGlo(false);
         setEtisalat(false);
         setMtn(true);
-
+        getDataBundles("Mtn")
         setNetwork("Mtn")
 
         setAirtel(false);
@@ -65,7 +63,7 @@ const AirtimePurchase = () => {
         setEtisalat(false);
         setMtn(false);
         setAirtel(true);
-
+        getDataBundles("Airtel")
         setNetwork("Airtel")
 
     }
@@ -80,22 +78,24 @@ const AirtimePurchase = () => {
     const buyData = async () => {
         const body = {
             vtu_network: network,
-            amount: Number(amount),
+            vtu_data: vtuData,
             phone: phoneNumber,
             email: email
         }
-        const res = await post({ endpoint: "VendAirtime", body: body, auth: false })
+        const res = await post({ endpoint: "VendData", body:body, auth: false })
         console.log(res);
-        alert("SUCCESS")
-        router.push(`/print-receipt?service=${network}&amount=${amount}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
+        feedback({
+            title: "Success",
+            text: "Success",
+            iconType: "success",
+          });
+        router.push(`/print-receipt?service=${network}&amount=${bundles?.find((id)=>id.code === vtuData)?.price}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
     }
 
 
-    const handleChangeAmount = (e) => {
-        const regex = /^[0-9\b]+$/;
-        if (e.target.value === "" || regex.test(e.target.value)) {
-            setAmount(e.target.value);
-        }
+    const handleChange = (e) => {
+        console.log(e.target.value)
+        setVtuData(e.target.value)
     }
 
     const handleChangePhone = (e) => {
@@ -108,12 +108,20 @@ const AirtimePurchase = () => {
         setEmail(e.target.value)
     }
 
+    const ColorButton = styled(Button)(({ theme }) => ({
+        color: theme.palette.getContrastText(yellow[800]),
+        backgroundColor: yellow[700],
+        '&:hover': {
+          backgroundColor: yellow[900],
+        },
+      }));
+
 
     return (
         <div className=''>
-            <div className='flex flex-h-center m-t-40  h-100 '>
-                <div className='flex flex-direction-v flex-h-center signup-border w-50'>
-                    <h1 className='center-text m-b-40  '>Purchase Airtime</h1>
+            <div className='flex flex-h-center m-t-10  h-100 '>
+                <div className='flex flex-direction-v flex-h-center signup-border'>
+                    <h1 className='center-text m-b-40  '>Data Subscription</h1>
                     <div className='w-100 m-b-40 '><ThreeDots /></div>
                     <h4 className='w-100 m-b-40 center-text '>Select Provider</h4>
                     <div className='flex flex-h-center m-b-40 space-around  '>
@@ -123,16 +131,31 @@ const AirtimePurchase = () => {
                         <OneClickCards onClick={handleAirtel} active={airtel ? "one-click-border one-click" : "one-click"} vendor="airtel-new-logo.png" />
                     </div>
                     <div className='flex flex-direction-v flex-v-center  '>
-                        <div className="w-100">
-                            <TextField type="number" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} onChange={handleChangeAmount} className="m-b-40 w-100" id="outlined-basicid" label="Amount" variant="outlined" />
-                        </div>
                         <div className='flex space-around  w-100'>
 
                             <TextField onChange={handleChangePhone} className="m-b-40  w-48" id="outlined-basic" label="Phone Number" variant="outlined" />
                             <TextField onChange={handleChangeEmail} className="m-b-40  w-48" id="outlined-basicid" label="Email" variant="outlined" />
                         </div>
-                        
+                        <div className="w-100">
+                            <FormControl fullWidth className="m-b-40  w-100">
+                                <InputLabel id="demo-simple-select-label">Data Bundle</InputLabel>
+                                <Select
+                                    className="m-b-40  w-100"
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={vtuData}
+                                    label="Data Bundle"
+                                    onChange={handleChange}
+                                >
+                                    {
+                                        Array.isArray(bundles) && bundles.map((item) => (
+                                            <MenuItem key={item?.code} value={item?.code}>{item?.title}</MenuItem>
+                                        ))
+                                    }
 
+                                </Select>
+                            </FormControl>
+                        </div>
                         <div className='m-b-20'><ColorButton onClick={buyData} variant="contained">Confirm</ColorButton></div>
                     </div>
                 </div>
@@ -143,4 +166,4 @@ const AirtimePurchase = () => {
     )
 }
 
-export default AirtimePurchase;
+export default DataSubscription;

@@ -1,9 +1,13 @@
 import OneClickCards from "@/Components/OneClickCards";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import LatestUpdate from "../Components/LatetstUpdate";
+import EasyBuy from "../Components/EasyBuy";
+
+
 
 
 export default function PrimarySearchAppBar() {
@@ -74,11 +78,30 @@ let router = useRouter()
     }
    
   }
+  const styles = {
+    pageTitle: {
+      mb: 2,
+    },
+
+    columnContainer: {
+      columns: "300px 2",
+      maxWidth: 1400,
+    },
+  };
 
 
   return (
-    <div className="signin-bg w-100 flex flex-h-center p-20 max-vh max-vw">
-      <div className="w-80 ">
+    <div className=" w-100  p-20">
+      
+        <Typography sx={styles.pageTitle} variant="h5">
+          Welcome to KoboRush
+        </Typography>
+        <Box sx={styles.columnContainer}>
+          <LatestUpdate />
+          <EasyBuy />
+        </Box>
+      
+      {/* <div className="w-80 ">
         <h1 className="color-white m-b-20"> Welcome, Make A Quick Transaction?</h1>
         <div className="flex flex-start">
           <div className='flex flex-h-center m-b-40 w-50 space-between '>
@@ -118,9 +141,8 @@ let router = useRouter()
             <Image src="/kobodash.jpg" width={500} height={500} />
           </div>
         </div>
-      </div>
-
-
+      </div> */}
     </div>
   );
+  
 }

@@ -1,6 +1,6 @@
 /* eslint-disable linebreak-style */
 import axios from 'axios';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 // import { logout } from '../utility/auth';
 
@@ -29,7 +29,8 @@ const fetchBackend = async (endpoint, method, auth, body, pQuery, param, multipa
   }
 
   if (auth) {
-    const accessToken = Cookies.get('token');
+    const accessToken = "";
+    // Cookies.get('token');
 
     if (accessToken) {
       headers.Authorization = `Bearer ${accessToken}`;

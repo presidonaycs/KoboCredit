@@ -13,6 +13,7 @@ import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import { useEffect, useState } from 'react';
 import { yellow } from '@mui/material/colors';
 import { useRouter } from 'next/router';
+import { feedback } from '@/config/feedback';
 
 const DataSubscription = () => {
 
@@ -74,7 +75,11 @@ const DataSubscription = () => {
         }
         const res = await post({ endpoint: "Power/VendPower", body: body, auth: false })
         console.log(res);
-        alert("SUCCESS")
+        feedback({
+            title: "Success",
+            text: "Success",
+            iconType: "success",
+          });
         router.push(`/print-receipt?service=${selectedDisco}&amount=${amount}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
     }
 
@@ -111,7 +116,7 @@ const DataSubscription = () => {
     return (
         <div className='m-b-40'>
             <div className='flex flex-h-center m-t-40 h-100 '>
-                <div className='flex flex-direction-v flex-h-center signup-border w-50'>
+                <div className='flex flex-direction-v flex-h-center signup-border'>
                     <h1 className='center-text m-b-40'>Electricity Bill</h1>
                     <div className='w-100 m-b-40'><ThreeDots /></div>
                     <h4 className='w-100 m-b-40 center-text'>Enter Details</h4>
@@ -120,17 +125,17 @@ const DataSubscription = () => {
                         <div className="w-100">
                             <TextField type="number" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} onChange={handleChangeAmount} className="m-b-40 w-100" id="outlined-basicid" label="Amount" variant="outlined" />
                         </div>
-                        <div className='flex space-around m-b-40  w-100'>
+                        <div className='flex space-around m-b-20  w-100'>
 
-                            <TextField onChange={handleChangePhone} className="m-b-40  w-48" id="outlined-basic" label="Phone Number" variant="outlined" />
-                            <TextField onChange={handleChangeEmail} className="m-b-40  w-48" id="outlined-basicid" label="Email" variant="outlined" />
+                            <TextField onChange={handleChangePhone} className="m-b-20  w-48" id="outlined-basic" label="Phone Number" variant="outlined" />
+                            <TextField onChange={handleChangeEmail} className="m-b-20  w-48" id="outlined-basicid" label="Email" variant="outlined" />
                         </div>
                         <div className="w-100">
-                            <FormControl fullWidth className="m-b-40  w-100">
+                            <FormControl fullWidth className="m-b-20  w-100">
                                 <InputLabel id="demo-simple-select-label">Distributor</InputLabel>
 
                                 <Select
-                                    className="m-b-40  w-100"
+                                    className="m-b-20  w-100"
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     label="Distributor"
