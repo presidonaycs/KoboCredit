@@ -398,11 +398,12 @@ import { ProSidebarProvider } from "react-pro-sidebar";
 import React from "react";
 import AppHeader from "../Components/AppHeader";
 import '@/styles/globals.css'
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import theme from "../config/theme";
 import "./index.css";
 import SideNav from "../Components/SideNav";
 import { Toaster } from "react-hot-toast";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 // import { BrowserRouter } from "react-router-dom";
 // import AppRoutes from "./router/AppRoutes";
 
@@ -410,6 +411,7 @@ function App({ Component, pageProps }) {
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <ProSidebarProvider>
           <CssBaseline />
           <AppHeader />
@@ -427,6 +429,7 @@ function App({ Component, pageProps }) {
             {/* </BrowserRouter> */}
           </Box>
         </ProSidebarProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </React.Fragment>
   );
