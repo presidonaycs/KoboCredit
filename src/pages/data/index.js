@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useToaster } from 'react-hot-toast';
 import { feedback } from '@/config/feedback';
+import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 
 
 const DataSubscription = () => {
@@ -23,12 +24,33 @@ const DataSubscription = () => {
     const [airtel, setAirtel] = useState(false);
     const [bundles, setBundles] = useState([]);
     const [vtuData, setVtuData] = useState(0);
+    const [amount, setAmount] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
     const [network, setNetwork] = useState("");
     const serviceType = ("Data Subscription")
     let router = useRouter()
     let toaster = useToaster();
+
+    const config = {
+        public_key: 'FLWPUBK_TEST-fa32182ff09d67865c487b01af321d90-X',
+        tx_ref: Date.now(),
+        amount: amount,
+        currency: 'NGN',
+        payment_options: 'card',
+        customer: {
+            email: email,
+            phone_number: phoneNumber,
+            name: 'john doe',
+        },
+        customizations: {
+            title: 'Data Subsciption',
+            description: 'Subscribe Data',
+            logo: '/9mobile-logo.png',
+        },
+    }
+
+    const handleFlutterPayment = useFlutterwave(config);
 
     const handleGlo = () => {
         setGlo(true);
@@ -83,19 +105,37 @@ const DataSubscription = () => {
             email: email
         }
         const res = await post({ endpoint: "VendData", body:body, auth: false })
+        handleFlutterPayment({
+            callback: (response) => {
+                console.log(response);
+                feedback({
+                    title: "Success",
+                    text: "Success",
+                    iconType: "success",
+                });
+                router.push(`/print-receipt?service=${network}&amount=${bundles?.find((id)=>id.code === vtuData)?.price}&serviceType=${serviceType}&transactionId=${response.transaction_id}`)
+                closePaymentModal() // this will close the modal programmatically
+            },
+            onClose: () => {  },
+        });
         console.log(res);
-        feedback({
-            title: "Success",
-            text: "Success",
-            iconType: "success",
-          });
-        router.push(`/print-receipt?service=${network}&amount=${bundles?.find((id)=>id.code === vtuData)?.price}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
+        // feedback({
+        //     title: "Success",
+        //     text: "Success",
+        //     iconType: "success",
+        //   });
+        // router.push(`/print-receipt?service=${network}&amount=${bundles?.find((id)=>id.code === vtuData)?.price}&serviceType=${serviceType}&transactionId=${response.transaction_id}`)
     }
 
 
     const handleChange = (e) => {
         console.log(e.target.value)
         setVtuData(e.target.value)
+       let bundle = bundles.find((bundle)=>{
+        return bundle?.code === e.target.value
+       })
+       console.log(bundle)
+       setAmount(Number(bundle?.price));
     }
 
     const handleChangePhone = (e) => {

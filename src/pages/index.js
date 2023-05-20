@@ -91,13 +91,12 @@ let router = useRouter()
 
 
   return (
-    <div className=" w-100  p-20">
+    <Box >
       
         <Typography sx={styles.pageTitle} variant="h5">
           Welcome to KoboRush
         </Typography>
         <Box sx={styles.columnContainer}>
-          <LatestUpdate />
           <EasyBuy />
         </Box>
       
@@ -142,7 +141,7 @@ let router = useRouter()
           </div>
         </div>
       </div> */}
-    </div>
+    </Box>
   );
   
 }

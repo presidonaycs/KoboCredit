@@ -404,34 +404,41 @@ import "./index.css";
 import SideNav from "../Components/SideNav";
 import { Toaster } from "react-hot-toast";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { Router } from "react-router-dom";
+import TopHeader from "@/Components/TopHeader";
 // import { BrowserRouter } from "react-router-dom";
 // import AppRoutes from "./router/AppRoutes";
 
 function App({ Component, pageProps }) {
   return (
-    <React.Fragment>
-      <ThemeProvider theme={theme}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <ProSidebarProvider>
-          <CssBaseline />
-          <AppHeader />
-          <Toaster
-            position="bottom-left"
-            reverseOrder={false}
-          />
-          <Box sx={styles.container}>
-            {/* <BrowserRouter> */}
-            <SideNav />
-            <Box component={"main"} sx={styles.mainSection}>
-              <Component {...pageProps} />
-              {/* <AppRoutes /> */}
-            </Box>
-            {/* </BrowserRouter> */}
-          </Box>
-        </ProSidebarProvider>
-        </LocalizationProvider>
-      </ThemeProvider>
-    </React.Fragment>
+      <Box>
+        <ThemeProvider theme={theme}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+            <ProSidebarProvider>
+
+              <CssBaseline />
+              <TopHeader />
+              <AppHeader />
+              <Toaster
+                position="bottom-left"
+                reverseOrder={false}
+              />
+              <Box sx={styles.container}>
+                {/* <BrowserRouter> */}
+                <SideNav />
+                <Box component={"main"} sx={styles.mainSection}>
+                  <Component {...pageProps} />
+                  {/* <AppRoutes /> */}
+                </Box>
+                {/* </BrowserRouter> */}
+              </Box>
+
+            </ProSidebarProvider>
+
+          </LocalizationProvider>
+        </ThemeProvider>
+      </Box>
   );
 }
 
@@ -440,7 +447,7 @@ const styles = {
   container: {
     display: "flex",
     bgcolor: "neutral.light",
-    height: "calc(100% - 64px)",
+    height: "88vh",
   },
   mainSection: {
     p: 4,

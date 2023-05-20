@@ -1,10 +1,16 @@
 import { MenuTwoTone } from "@mui/icons-material";
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { useProSidebar } from "react-pro-sidebar";
-// import kobologo from "../../public/kobologo.png";
-import Image from "next/image";
-import Link from "next/link";
-
+// import kobologo from "/mainlogo.png";
+import { blue } from "@mui/material/colors";
+// import { Router } from "react-router-dom";
 
 function AppHeader() {
   const { collapseSidebar, toggleSidebar, broken } = useProSidebar();
@@ -13,25 +19,28 @@ function AppHeader() {
       <Toolbar>
         <IconButton
           onClick={() => (broken ? toggleSidebar() : collapseSidebar())}
-          color="secondary"
+          color="#000080"
         >
           <MenuTwoTone />
         </IconButton>
-       
-        {/* <Box  sx={styles.appLogo} src={kobologo} /> */}
-        <Link href="/">
-        <Image
-          style={{marginLeft:"6px"}}
-          src="/kobologo.png"
-          width={20}
-          height={20}
-        />
-        </Link>
-        
-        
+        <Box component="img" sx={styles.appLogo} src="/mainlogo.png" />
+        <Typography sx={{ p: 1, color: "#000080" }}>KOBOrush</Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Box>
-          <Typography>KoboRush</Typography>
+
+        <Box sx={styles.rightTopHeader}>
+          <Button
+            variant="outlined"
+            sx={{ color: blue[900], textTransform: "capitalize", mr: 2 }}
+          >
+            Sign up
+          </Button>
+
+          <Button
+            variant="outlined"
+            sx={{ color: blue[900], textTransform: "capitalize" }}
+          >
+            Sign in
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>
@@ -42,12 +51,18 @@ function AppHeader() {
 
 const styles = {
   appBar: {
-    bgcolor: "deepOrange.mid",
+    bgcolor: "white",
   },
   appLogo: {
-    width: 20,
+    width: 22,
     ml: 1,
     cursor: "pointer",
+  },
+  rightTopHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    mr: 2,
   },
 };
 

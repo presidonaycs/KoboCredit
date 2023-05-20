@@ -2,12 +2,13 @@ import { get, post } from '@/api-services/fetch';
 import OneClickCards from '@/Components/OneClickCards';
 import ThreeDots from '@/Components/ThreeDots'
 import Button from '@mui/material/Button';
-import {styled} from "@mui/material";
+import { styled } from "@mui/material";
 import TextField from '@mui/material/TextField';
-import  {yellow}  from "@mui/material/colors";
+import { yellow } from "@mui/material/colors";
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { feedback } from '@/config/feedback';
+import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 
 const AirtimePurchase = () => {
 
@@ -22,16 +23,34 @@ const AirtimePurchase = () => {
     const serviceType = ("Airtime Purchase")
     let router = useRouter()
 
+    const [config, setConfig] = useState({
+        public_key: 'FLWPUBK_TEST-fa32182ff09d67865c487b01af321d90-X',
+        tx_ref: Date.now(),
+        amount: 100,
+        currency: 'NGN',
+        payment_options: 'card',
+        customer: {
+            email: 'user@gmail.com',
+            phone_number: '070********',
+            name: 'john doe',
+        },
+        customizations: {
+            title: 'Airtime Purchase',
+            description: 'Payment for airtime',
+            logo: '/9mobile-logo.png',
+        },
+    })
 
-    
+    const handleFlutterPayment = useFlutterwave(config);
+
 
     const ColorButton = styled(Button)(({ theme }) => ({
         color: theme.palette.getContrastText(yellow[800]),
         backgroundColor: yellow[700],
         '&:hover': {
-          backgroundColor: yellow[900],
+            backgroundColor: yellow[900],
         },
-      }));
+    }));
 
     const handleGlo = () => {
         setGlo(true);
@@ -85,14 +104,24 @@ const AirtimePurchase = () => {
             phone: phoneNumber,
             email: email
         }
+
         const res = await post({ endpoint: "VendAirtime", body: body, auth: false })
+        handleFlutterPayment({
+            callback: (response) => {
+                console.log(response);
+                feedback({
+                    title: "Success",
+                    text: "Success",
+                    iconType: "success",
+                });
+                router.push(`/print-receipt?service=${network}&amount=${amount}&serviceType=${serviceType}&transactionId=${response.transaction_id}`)
+                closePaymentModal() // this will close the modal programmatically
+            },
+            onClose: () => { },
+        });
         console.log(res);
-        feedback({
-            title: "Success",
-            text: "Success",
-            iconType: "success",
-          });
-        router.push(`/print-receipt?service=${network}&amount=${amount}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
+       
+        // router.push(`/print-receipt?service=${network}&amount=${amount}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
     }
 
 
@@ -100,18 +129,39 @@ const AirtimePurchase = () => {
         const regex = /^[0-9\b]+$/;
         if (e.target.value === "" || regex.test(e.target.value)) {
             setAmount(e.target.value);
+            setConfig({
+                ...config,
+                amount: e.target.value
+            })
         }
+
     }
 
     const handleChangePhone = (e) => {
         console.log(e.target.value)
         setPhoneNumber(e.target.value)
+        setConfig({
+            ...config, customer: {
+                email: email,
+                phone_number: e.target.value,
+                name: 'john doe',
+            }
+        })
     }
 
     const handleChangeEmail = (e) => {
         console.log(e.target.value)
         setEmail(e.target.value)
+        setConfig({
+            ...config, customer: {
+                email: e.target.value,
+                phone_number: phoneNumber,
+                name: 'john doe',
+            }
+        })
     }
+
+    console.log(config)
 
 
     return (
@@ -136,7 +186,7 @@ const AirtimePurchase = () => {
                             <TextField onChange={handleChangePhone} className="m-b-40  w-48" id="outlined-basic" label="Phone Number" variant="outlined" />
                             <TextField onChange={handleChangeEmail} className="m-b-40  w-48" id="outlined-basicid" label="Email" variant="outlined" />
                         </div>
-                        
+
 
                         <div className='m-b-20'><ColorButton onClick={buyData} variant="contained">Confirm</ColorButton></div>
                     </div>

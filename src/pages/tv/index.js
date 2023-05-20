@@ -8,9 +8,10 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import {styled} from "@mui/material";
 import  {yellow}  from "@mui/material/colors";
-
+import { feedback } from '@/config/feedback';
 import {useRouter} from 'next/router'
 import { useEffect, useState } from 'react';
+import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 
 const CableSubscription = () => {
 
@@ -21,6 +22,7 @@ const CableSubscription = () => {
     const [bundles, setBundles] = useState([]);
     const [cable, setCable] = useState([]);
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [amount, setAmount] = useState(0)
     const [email, setEmail] = useState("");
     const [cardNumber, setCardNumber] = useState("");
     const [selectedBundle, setSelectedBundle] = useState("");
@@ -28,6 +30,26 @@ const CableSubscription = () => {
     const serviceType = ("Cable Subscription")
     let router = useRouter();
   
+
+    const config  = {
+        public_key: 'FLWPUBK_TEST-fa32182ff09d67865c487b01af321d90-X',
+        tx_ref: Date.now(),
+        amount: amount,
+        currency: 'NGN',
+        payment_options: 'card',
+        customer: {
+            email: email,
+            phone_number: phoneNumber,
+            name: 'john doe',
+        },
+        customizations: {
+            title: 'Airtime Purchase',
+            description: 'Payment for airtime',
+            logo: '/9mobile-logo.png',
+        },
+    }
+
+    const handleFlutterPayment = useFlutterwave(config);
    
 
     // const handleGlo = () => {
@@ -94,9 +116,21 @@ const CableSubscription = () => {
             servicecode: selectedBundle
         }
         const res = await post({ endpoint: "Tv/VendTv", body: body, auth: false })
+        handleFlutterPayment({
+            callback: (response) => {
+                console.log(response);
+                feedback({
+                    title: "Success",
+                    text: "Success",
+                    iconType: "success",
+                });
+                router.push(`/print-receipt?service=${cable}&amount=${bundles?.find((id)=>id.code === selectedBundle)?.price}&serviceType=${serviceType}&transactionId=${response.transaction_id}`)
+                closePaymentModal() // this will close the modal programmatically
+            },
+            onClose: () => {  },
+        });
         console.log(res);
-        alert("SUCCESS")
-       router.push(`/print-receipt?service=${cable}&amount=${bundles?.find((id)=>id.code === selectedBundle)?.price}&serviceType=${serviceType}&transactionId=${res?.data?.ref}`)
+    //    router.push(`/print-receipt?service=${cable}&amount=${bundles?.find((id)=>id.code === selectedBundle)?.price}&serviceType=${serviceType}&transactionId=${response.transaction_id}`)
     }
 
 
@@ -109,6 +143,11 @@ const CableSubscription = () => {
     const handleChangeBundle = (e) => {
         console.log(e.target.value)
         setSelectedBundle(e.target.value)
+        let bundle = bundles.find((bundle)=>{
+            return bundle?.code === e.target.value
+           })
+           console.log(bundle)
+           setAmount(Number(bundle?.price));
     }
 
     const handleChangeCard = (e) => {

@@ -74,10 +74,12 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background-color: #fafafa;
 }
 
 body {
   color: black;
+  background-color: #fafafa;
   /* background: linear-gradient(
       to bottom,
       transparent,
