@@ -94,7 +94,7 @@ let router = useRouter()
     <Box >
       
         <Typography sx={styles.pageTitle} variant="h5">
-          Welcome to KoboRush
+          Welcome to KOBOrush
         </Typography>
         <Box sx={styles.columnContainer}>
           <EasyBuy />

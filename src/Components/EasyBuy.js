@@ -12,7 +12,7 @@ function EasyBuy() {
     <Card>
       <CardContent>
         <Typography variant="cardTitle">
-          Need airtime, data subscription or power
+          Need Airtime, Data, TV subscription or Power
         </Typography>
         <Box sx={styles.easyContainer}>
           <Box sx={styles.columnContent}>
