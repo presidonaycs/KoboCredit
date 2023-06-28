@@ -14,7 +14,6 @@ import TopHeader from "@/Components/TopHeader";
 
 function App({ Component, pageProps, ...appProps }) {
 
- 
 
   if ([`/signup`, `/signin`].includes(appProps.router.pathname)) {
     return <Component {...pageProps} />;
