@@ -88,6 +88,10 @@ body {
     rgb(var(--background-start-rgb)); */
 }
 
+.w-25{
+  width: 100%;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -108,7 +112,7 @@ a {
   flex-direction: column;
 }
 
-.flex-start{
+.flex-start {
   justify-content: flex-start;
 }
 
@@ -126,6 +130,18 @@ a {
 
 .w-50 {
   width: 50%;
+}
+
+.w-40{
+  width: 40%;
+}
+
+.wi-40{
+  width: 350px;
+}
+
+.wi-30 {
+  width: 300px;
 }
 
 .w-30 {
@@ -391,8 +407,20 @@ a {
   margin-top: 10px !important;
 }
 
-.color-white{
+.w-55{
+  width: 380px;
+}
+
+.color-white {
   color: white;
+}
+
+.color-orange{
+  color: #F28437;
+}
+
+.color-blue{
+  color: #2136f6;
 }
 
 .m-t-15 {
@@ -466,11 +494,11 @@ a {
   width: 40%;
 }
 
-.min-80{
-min-width: 80%;
+.min-80 {
+  min-width: 80%;
 }
 
-.w-320{
+.w-320 {
   min-width: 600px;
 }
 
@@ -480,7 +508,7 @@ min-width: 80%;
   width: 60%;
 }
 
-.css-n6v7qi-MuiPaper-root-MuiDrawer-paper{
+.css-n6v7qi-MuiPaper-root-MuiDrawer-paper {
   background-color: dimgray;
   color: white;
 }
@@ -498,16 +526,23 @@ min-width: 80%;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
 }
 
+.backG {
+  background-image: url(/blake-wisz-Xn5FbEM9564-unsplash.jpg);
+  background-size: cover;
+  height: 100vh;
+}
+
+
 .summary-sub-border {
   border: 2px solid #E3E3E3;
   border-radius: 4px;
 }
 
-.receiptBottom{
+.receiptBottom {
   border-bottom: 1px dashed #575757;
 }
 
-.receiptBg{
+.receiptBg {
   background-image: url("/Home.png");
   background-size: contain;
   background-blend-mode: luminosity;
@@ -526,7 +561,7 @@ min-width: 80%;
   border-radius: 50%;
 }
 
-.bg-white{
+.bg-white {
   background-color: white;
 }
 
@@ -897,7 +932,15 @@ div.banner .login {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  background-attachment:scroll;
+  background-attachment: scroll;
+}
+
+.trans-bg {
+  background: rgba(250, 250, 250, 0.01);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2), inset 0px 1px 2px rgba(217, 217, 217, 0.6), inset 0px 2px 40px rgba(0, 104, 190, 0.25), inset 0px -4px 4px rgba(0, 104, 190, 0.25), inset 0px -40px 40px rgba(26, 26, 26, 0.1), inset 0px 4px 12px rgba(198, 198, 198, 0.4);
+  backdrop-filter: blur(20px);
+  border-radius: 8px;
+
 }
 
 div.login {
@@ -1264,4 +1307,15 @@ strong {
 
 .white-bg {
   background-color: white;
+}
+
+.center{
+ 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+
 }

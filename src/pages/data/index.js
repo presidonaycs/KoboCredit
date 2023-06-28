@@ -6,16 +6,16 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import {styled} from "@mui/material";
+import { styled } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { yellow } from '@mui/material/colors';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useToaster } from 'react-hot-toast';
 import { feedback } from '@/config/feedback';
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 
-
+const key = process.env.NEXT_PUBLIC_PUBLIC_KEY;
 const DataSubscription = () => {
 
     const [glo, setGlo] = useState(false);
@@ -23,34 +23,68 @@ const DataSubscription = () => {
     const [mtn, setMtn] = useState(false);
     const [airtel, setAirtel] = useState(false);
     const [bundles, setBundles] = useState([]);
-    const [vtuData, setVtuData] = useState(0);
+    const [vtuData, setVtuData] = useState(null);
     const [amount, setAmount] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
-    const [network, setNetwork] = useState("");
-    const serviceType = ("Data Subscription")
-    let router = useRouter()
-    let toaster = useToaster();
+    const [network, setNetwork] = useState(null);
+    const serviceType = ("Data Subscription");
+
+    let router = useRouter();
+
+    const intervalId = useRef();
 
     const config = {
-        public_key: 'FLWPUBK_TEST-fa32182ff09d67865c487b01af321d90-X',
+        public_key: key,
         tx_ref: Date.now(),
         amount: amount,
         currency: 'NGN',
-        payment_options: 'card',
+        payment_options: 'card,mobilemoney,ussd',
         customer: {
             email: email,
             phone_number: phoneNumber,
-            name: 'john doe',
+            
         },
         customizations: {
             title: 'Data Subsciption',
             description: 'Subscribe Data',
-            logo: '/9mobile-logo.png',
         },
     }
 
+    const initiateBody = {
+        id: 0,
+        amount: Number(amount),
+        phone: phoneNumber,
+        email: email,
+        name: "string",
+        payment_type: "card,mobilemoney,ussd",
+        product: network,
+        status: "pending",
+        tx_ref: Date.now(),
+        transid: 0,
+        created_at: new Date().toISOString()
+    }
+
     const handleFlutterPayment = useFlutterwave(config);
+
+    const verifyTransaction = async (ref) => {
+        let check;
+
+        const transactionStatus = await post({ endpoint: `FlutterWave/VerifyTransaction?tx_ref=${ref}` })
+       
+        check = transactionStatus;
+
+        if (!intervalId) {
+            intervalId.current = setInterval(async () => {
+                const transactionStatus = await post({ endpoint: `FlutterWave/VerifyTransaction?tx_ref=${ref}` })
+               
+                check = transactionStatus;
+            }, 10000)
+        }
+
+
+        return check;
+    }
 
     const handleGlo = () => {
         setGlo(true);
@@ -93,58 +127,121 @@ const DataSubscription = () => {
 
     const getDataBundles = async (network) => {
         const res = await get({ endpoint: `GetDataBundles?network=${network}`, auth: false })
-        console.log(res);
+       
         setBundles(res?.data?.bundles)
     }
 
+
+    const validate = () =>{
+        let error = ""
+        if (phoneNumber.length !== 11 || isNaN(Number(phoneNumber))){
+            error = "Please Enter a correct 11-digit phone number(e.g 08022222222)"
+            return error;
+        }
+        if(!email || email === ""){
+            error = "Please Enter a valid email address"
+            return error;
+        }
+        if(!vtuData){
+            error = "Please Select a mobile data plan"
+            return error;
+        }
+        if(!network){
+            error = "Please choose a network provider"
+            return error;
+        }
+
+        return error;
+    }
+
     const buyData = async () => {
+
+        let valid =  validate();
+        if(valid !== ""){
+            feedback({
+                title: "Validation Error",
+                text:valid,
+                iconType: "warning",
+            });
+            return;
+        }
+
+        const flutter = await get({ endpoint: "FlutterWave/referencecode" })
+        config.tx_ref = flutter?.data;
+        initiateBody.tx_ref = flutter?.data;
+        const initiate = await post({ endpoint: "FlutterWave/InitiateTransaction", body: initiateBody })
+
         const body = {
             vtu_network: network,
             vtu_data: vtuData,
             phone: phoneNumber,
             email: email
         }
-        const res = await post({ endpoint: "VendData", body:body, auth: false })
-        handleFlutterPayment({
-            callback: (response) => {
-                console.log(response);
-                feedback({
-                    title: "Success",
-                    text: "Success",
-                    iconType: "success",
-                });
-                router.push(`/print-receipt?service=${network}&amount=${bundles?.find((id)=>id.code === vtuData)?.price}&serviceType=${serviceType}&transactionId=${response.transaction_id}`)
-                closePaymentModal() // this will close the modal programmatically
-            },
-            onClose: () => {  },
-        });
-        console.log(res);
-        // feedback({
-        //     title: "Success",
-        //     text: "Success",
-        //     iconType: "success",
-        //   });
-        // router.push(`/print-receipt?service=${network}&amount=${bundles?.find((id)=>id.code === vtuData)?.price}&serviceType=${serviceType}&transactionId=${response.transaction_id}`)
+
+        if (initiate.data.status === "Successful") {
+            handleFlutterPayment({
+                callback: async (response) => {
+                  
+                    const paymentCheck = await verifyTransaction(response.tx_ref);
+              
+
+                    if (response.status === "successful") {
+                        if (paymentCheck.data.status === "Successful") {
+                            const res = await post({ endpoint: "VendData", body: body, auth: false })
+                            feedback({
+                                title: "Success",
+                                text: "Success",
+                                iconType: "success",
+                            });
+                            clearInterval(intervalId.current);
+                            intervalId.current = null;
+                            router.push(`/print-receipt?service=${network}&amount=${bundles?.find((id) => id.code === vtuData)?.price}&serviceType=${serviceType}&transactionId=${response.transaction_id}`)
+                            closePaymentModal() // this will close the modal programmatically
+                        }
+                    }
+                    else {
+                        feedback({
+                            title: "Transaction Error",
+                            text: "Failed to process your transaction",
+                            iconType: "error",
+                        });
+                        closePaymentModal() // this will close the modal programmatically
+                    }
+                  
+                },
+                onClose: () => { },
+            });
+        }
+        else {
+            feedback({
+                title: "Transaction Error",
+                text: "Failed to initiate Transaction, Please try again later.",
+                iconType: "error",
+            });
+        }
+
+
+
+       
     }
 
 
     const handleChange = (e) => {
-        console.log(e.target.value)
+  
         setVtuData(e.target.value)
-       let bundle = bundles.find((bundle)=>{
-        return bundle?.code === e.target.value
-       })
-       console.log(bundle)
-       setAmount(Number(bundle?.price));
+        let bundle = bundles.find((bundle) => {
+            return bundle?.code === e.target.value
+        })
+        setAmount(Number(bundle?.price));
     }
 
     const handleChangePhone = (e) => {
-        console.log(e.target.value)
+       
         setPhoneNumber(e.target.value)
     }
 
     const handleChangeEmail = (e) => {
-        console.log(e.target.value)
+      
         setEmail(e.target.value)
     }
 
@@ -152,9 +249,9 @@ const DataSubscription = () => {
         color: theme.palette.getContrastText(yellow[800]),
         backgroundColor: yellow[700],
         '&:hover': {
-          backgroundColor: yellow[900],
+            backgroundColor: yellow[900],
         },
-      }));
+    }));
 
 
     return (
