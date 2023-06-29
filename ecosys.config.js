@@ -1,6 +1,6 @@
 module.exports = {
     apps : [{
         name: 'IntuListAPI',
-        script: './src/_app.js',
+        script: './src/pages/_app.js',
     }]
 };
